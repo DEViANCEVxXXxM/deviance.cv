@@ -22,7 +22,7 @@
 
     els.forEach(function(el){ io.observe(el); });
 
-    // Страховка для элементов, которые уже в зоне видимости
+    
     setTimeout(function(){
       document.querySelectorAll('.reveal:not(.in)').forEach(function(el){
         var rect = el.getBoundingClientRect();
@@ -69,7 +69,7 @@
     
     var prefersReduced = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (prefersReduced) {
-      // Просто меняем слова без анимации
+      
       var i = 0;
       setInterval(function(){
         if (!document.body.contains(el)) return;
@@ -110,7 +110,7 @@
           }
         }
         el.textContent = result;
-        setTimeout(step, 40); // ~25 fps
+        setTimeout(step, 40); 
       }
       step();
     }

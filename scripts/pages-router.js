@@ -123,7 +123,7 @@
 
   function loadPage(url){
     try { url = decodeURIComponent(url); } catch(e){}
-    var bare = url.replace(/^iframe\//, '');
+    var bare = url.replace(/^iframe\
     if (!Object.prototype.hasOwnProperty.call(ALLOWED, bare)) {
       document.title = baseTitle;
       unmountAll();
@@ -153,7 +153,7 @@
       wrap.setAttribute('data-page', '');
       wrap.style.height = '100%';
       var iframe = document.createElement('iframe');
-      iframe.src = abs(url.replace(/^iframe\//, ''));
+      iframe.src = abs(url.replace(/^iframe\
       iframe.loading = 'lazy';
       iframe.title = iframe.src.split('/').pop().replace('.html', '');
       iframe.className = 'page-embed-frame';

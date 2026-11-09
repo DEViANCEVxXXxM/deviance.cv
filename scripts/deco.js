@@ -51,12 +51,12 @@
       hero.appendChild(el('dx-hero-r',
         '<div class="dx-row"><span class="dx-num fill">03</span>' + spark(18, 0) + '<span class="dx-x">✕</span>' + spark(14, 1.2) + '<span class="dx-num">26</span></div>' +
         '<div class="dx-row end" style="margin-top:14px">' + globe(130) +
-          '<div class="dx-col">' + qr(117) + '<span class="dx-label">SIG // 0x2A</span></div></div>' +
+          '<div class="dx-col">' + qr(117) + '<span class="dx-label">SIG 
         '<div class="dx-hazard" style="margin-top:14px"></div>' +
-        '<div class="dx-row" style="justify-content:space-between;margin-top:10px"><span class="dx-jp">サイバーパンク</span><span class="dx-label">V.26 // TSK</span></div>'));
+        '<div class="dx-row" style="justify-content:space-between;margin-top:10px"><span class="dx-jp">サイバーパンク</span><span class="dx-label">V.26 
       hero.appendChild(el('dx-hero-l',
         '<div class="dx-row" style="align-items:flex-start;gap:16px"><span class="dx-vert">DEViNACE</span>' +
-        '<div class="dx-col" style="gap:14px">' + arrow(120, 45) + '<span class="dx-outline" style="--fs:40px">XXX</span>' + dots(5) + '<span class="dx-label">LINK // STABLE</span></div></div>'));
+        '<div class="dx-col" style="gap:14px">' + arrow(120, 45) + '<span class="dx-outline" style="--fs:40px">XXX</span>' + dots(5) + '<span class="dx-label">LINK 
     }
 
     var side = document.querySelector('.work-side');
@@ -66,7 +66,7 @@
         '<div class="dx-wave" style="height:84px"></div>' +
         '<div class="dx-hazard" style="--h:12px"></div>' +
         '<div class="dx-bar" style="--p:62%"></div>' +
-        '<div class="dx-row" style="justify-content:space-between">' + dots(4) + '<span class="dx-label">LOG.STREAM // TODO</span></div>'));
+        '<div class="dx-row" style="justify-content:space-between">' + dots(4) + '<span class="dx-label">LOG.STREAM 
     }
 
     var home = document.getElementById('app-home');
@@ -78,9 +78,9 @@
     if (home){
       divider('stack',
         '<span class="dx-num fill">02</span>' + spark(18, 0) + '<span class="dx-outline" style="--fs:34px">XXX</span>' + spark(12, 1) +
-        '<div class="dx-hazard"></div><span class="dx-barcode"></span><span class="dx-label">SIGNAL // 0x1A</span>');
+        '<div class="dx-hazard"></div><span class="dx-barcode"></span><span class="dx-label">SIGNAL 
       divider('about',
-        '<span class="dx-label">NODE // 0x2A</span>' + dots(5) + '<div class="dx-bar" style="--p:40%;flex:1"></div>' + globe(46) + spark(16, .8) + '<span class="dx-jp">サイバーパンク</span>');
+        '<span class="dx-label">NODE 
       divider('contact',
         '<div class="dx-hazard" style="--h:18px"></div>' + spark(20, 0) + '<span class="dx-num">05</span>' + spark(12, 1.4) + '<span class="dx-label">OPEN CHANNEL</span><span class="dx-barcode"></span>');
     }

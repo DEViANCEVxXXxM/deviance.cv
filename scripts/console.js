@@ -87,7 +87,7 @@
   register('exit', 'close the console', function(){ close(); return null; }, ['q']);
   register('reload', 'reload the page', function(){
     setTimeout(function(){ location.reload(); }, 1200);
-    return ['SYSTEM // RELOAD', 'connection ' + LINK_ID + ' — resetting ...'];
+    return ['SYSTEM 
   }, ['rld']);
   register('shutdown', 'close the page', function(){
     setTimeout(function(){
@@ -98,7 +98,7 @@
         }
       }, 400);
     }, 1200);
-    return ['SYSTEM // SHUTDOWN', 'terminating node ' + NODE_ID + ' ...'];
+    return ['SYSTEM 
   }, ['sd']);
 
   var root, tl, tr, bl, br, log, input, openFlag = false, firstBoot = true;

@@ -1,13 +1,10 @@
-/* scripts/topbar-fx.js
-   Interactive canvas background for the topbar.
-   Pointer events are attached to the topbar host because the canvas
-   itself has pointer-events: none. */
+
 (function(){
   "use strict";
   var canvas = document.getElementById('topbar-cv');
   if (!canvas) return;
 
-  var host = canvas.parentElement; // .topbar
+  var host = canvas.parentElement; 
   if (!host) return;
 
   var ctx = canvas.getContext('2d');
@@ -61,7 +58,7 @@
     }
   }
 
-  // Listen on the host, not the canvas, because the canvas has pointer-events: none.
+  
   host.addEventListener('pointermove', function(e) {
     var rect = host.getBoundingClientRect();
     mouse.x = e.clientX - rect.left;

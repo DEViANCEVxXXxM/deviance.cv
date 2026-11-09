@@ -1,6 +1,4 @@
-/* scripts/contact-fx.js
-   Black hole with gravitational lensing.
-   Pauses the render loop when the canvas is offscreen. */
+
 (function(){
   "use strict";
   var canvas = document.getElementById('contact-cv');
@@ -56,22 +54,22 @@
     }
 
     void main() {
-        // Нормализованные координаты от -1 до 1
+        
         vec2 uv = (gl_FragCoord.xy * 2.0 - uRes) / min(uRes.x, uRes.y);
 
-        // 1. УВЕЛИЧИВАЕМ РАЗМЕР (чем меньше множитель, тем больше дыра)
+        
         uv *= 3.3; 
 
-        // 2. СМЕЩАЕМ ЯКОРЬ (ЦЕНТР) ДЫРЫ ВПРАВО
+        
         uv.x -= 3.5;
         uv.y -= 0.0;
 
-        // Создаем базис камеры
+        
         vec3 forward = normalize(uCamTarget - uCamPos);
         vec3 right = normalize(cross(forward, uCamUp));
         vec3 up = cross(right, forward);
 
-        // Направление луча
+        
         float focalLength = 2.0; 
         vec3 rd = normalize(uv.x * right + uv.y * up + focalLength * forward);
 
@@ -81,42 +79,42 @@
         vec3 prevPos = pos;
         bool hitEventHorizon = false;
 
-        // Raymarching
+        
         for (int i = 0; i < 120; i++) {
             float r = length(pos);
             
-            // Горизонт событий
+            
             if (r < 0.3) {
                 hitEventHorizon = true;
                 break;
             }
             
-            // Гравитация (искривление луча)
+            
             vec3 accel = -pos / (r * r * r);
             dir += accel * 0.06;
             
             prevPos = pos;
             pos += dir * 0.06;
 
-            // Пересечение с плоскостью диска (y = 0)
+            
             if (prevPos.y * pos.y < 0.0) {
                 float t = prevPos.y / (prevPos.y - pos.y);
                 vec3 hit = mix(prevPos, pos, t);
                 float hitR = length(hit.xz);
                 
-                // Размер диска (УВЕЛИЧЕН до 2.8 вместо 2.0)
+                
                 if (hitR > 0.3 && hitR < 15.0) {
                     float angle = atan(hit.z, hit.x);
                     
-                    // Текстура диска
+                    
                     float n1 = noise(vec2(angle * 8.0 - uTime * 2.0, hitR * 8.0));
                     float n2 = noise(vec2(angle * 16.0 + uTime, hitR * 16.0));
                     float density = n1 * 0.6 + n2 * 0.4;
                     
-                    // Затухание (края шире)
+                    
                     float alpha = smoothstep(0.3, 0.45, hitR) * smoothstep(2.8, 1.5, hitR) * density;
                     
-                    // Яркость
+                    
                     float brightness = 1.0 + 3.0 * smoothstep(1.2, 0.3, hitR);
                     color += uColor * alpha * brightness * 2.0;
                 }
@@ -124,12 +122,12 @@
             if (r > 10.0) break;
         }
         
-        // Звезды
+        
         if (!hitEventHorizon) {
              color += starfield(rd);
         }
         
-        // Фотонное кольцо (свечение)
+        
         float dist = length(uv); 
         float glow = exp(-abs(dist - 0.3) * 15.0) * 0.4;
         color += uColor * glow;
@@ -193,7 +191,7 @@
   updateColor();
   document.addEventListener('acidchange', updateColor);
 
-  // Орбитальная камера
+  
   var camYaw = 0.0;
   var camPitch = 0.05;
   var camDist = 2.2;
@@ -228,7 +226,7 @@
 
     camYaw -= dx * 0.01;
     camPitch += dy * 0.01;
-    camPitch = Math.max(-1.5, Math.min(1.5, camPitch)); // Ограничение
+    camPitch = Math.max(-1.5, Math.min(1.5, camPitch)); 
   });
 
   window.addEventListener('pointerup', function() {
@@ -243,12 +241,12 @@
   var isVisible = false;
 
   function resize() {
-    // Cap DPR at 1.5 for performance
+    
     var dpr = Math.min(window.devicePixelRatio || 1, 1.5);
     var w = canvas.clientWidth;
     var h = canvas.clientHeight;
     
-    // Prevent WebGL errors if hidden (0x0)
+    
     if (w === 0 || h === 0) return; 
 
     if (canvas.width !== Math.floor(w * dpr) || canvas.height !== Math.floor(h * dpr)) {
@@ -260,7 +258,7 @@
   }
 
   function frame(now) {
-    if (!isVisible) return; // Stop loop if not visible
+    if (!isVisible) return; 
     
     raf = requestAnimationFrame(frame);
     resize();
@@ -289,7 +287,7 @@
     }
   }
 
-  // Automatically pause the WebGL loop when hidden (e.g., navigating to #page/)
+  
   if ('IntersectionObserver' in window) {
     new IntersectionObserver(function(entries) {
       isVisible = entries[0].isIntersecting;

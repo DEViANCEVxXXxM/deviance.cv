@@ -33,8 +33,8 @@ window.scrollLock = (function(){
     paint();
   }
   function paint() {
-    // rect uses pathLength="1" and stroke-dasharray:1 in CSS,
-    // so dashoffset is normalized 0..1 regardless of pixel size.
+    
+    
     rect.setAttribute('stroke-dashoffset', String(1 - p));
     if (svg) svg.classList.toggle('on', p > 0 || holding);
     btn.classList.toggle('is-holding', holding);

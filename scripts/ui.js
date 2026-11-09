@@ -1,6 +1,4 @@
-/* scripts/ui.js
-   Menu, logo, cursor, hero video, topbar routing (page mode),
-   progress bar, ticker, pageCmd visibility, proj-img preload. */
+
 (function(){
   "use strict";
 
@@ -92,8 +90,8 @@
   document.querySelectorAll('.proj[data-img]').forEach(function(el){
     var img = el.getAttribute('data-img');
     if (img){
-      // Преобразуем в абсолютный путь, чтобы CSS-переменная из styles/main.css 
-      // не искала картинку в папке styles/
+      
+      
       var absImg = new URL(img, location.href).href;
       el.style.setProperty('--proj-img', 'url("' + absImg + '")');
     }

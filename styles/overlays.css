@@ -1,4 +1,4 @@
-/* ---------- custom cursor ---------- */
+
 @media (pointer:fine){
   html.has-cursor, html.has-cursor *{cursor:none!important}
   .cursor{
@@ -16,7 +16,7 @@
   .cursor.is-hover .ch{opacity:1}
 }
 
-/* ---------- file:// warning ---------- */
+
 .filewarn{
   position:fixed;inset:0;z-index:2000;background:#000;
   display:flex;align-items:center;justify-content:center;
@@ -60,7 +60,7 @@
 .fw-ring rect{fill:none;stroke:var(--acid);stroke-width:2;stroke-dasharray:1;stroke-dashoffset:1}
 #fwFx{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
 
-/* ---------- dev console (qterm) ---------- */
+
 #dc-root{
   position:fixed;inset:0;z-index:3000;background:#000;
   opacity:0;visibility:hidden;transition:opacity .14s ease-out,visibility 0s linear .14s;
@@ -100,7 +100,7 @@
   #dc-in{bottom:56px}
 }
 
-/* ---------- CRT effect ---------- */
+
 .crt{
   position:fixed;inset:0;z-index:9990;pointer-events:none;overflow:hidden;
   opacity:0;visibility:hidden;transition:opacity .35s ease,visibility 0s linear .35s;

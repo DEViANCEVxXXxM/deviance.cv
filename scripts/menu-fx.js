@@ -1,5 +1,4 @@
-/* scripts/menu-fx.js
-   Киберпанк-сетка для фона меню. */
+
 (function(){
   "use strict";
   var canvas = document.getElementById('menu-cv');
@@ -38,10 +37,10 @@
 
     ctx.clearRect(0, 0, w, h);
 
-    // Горизонт на 65% высоты (ниже текста)
+    
     var horizon = h * 0.65;
     
-    // Градиент для плавного растворения сетки вверху
+    
     var grad = ctx.createLinearGradient(0, horizon, 0, h);
     grad.addColorStop(0, 'transparent');
     grad.addColorStop(0.3, color);
@@ -52,7 +51,7 @@
 
     offset = (offset + 0.4) % 100;
 
-    // Горизонтальные линии (уходят вдаль)
+    
     for (var i = 1; i < 25; i++) {
       var z = i + offset * 0.02;
       var y = horizon + (h - horizon) / z;
@@ -64,7 +63,7 @@
       }
     }
 
-    // Вертикальные линии (сходятся к горизонту)
+    
     for (var j = -15; j <= 15; j++) {
       ctx.beginPath();
       ctx.moveTo(w/2, horizon);
@@ -80,7 +79,7 @@
           var open = menu.classList.contains('open');
           if (open && !isOpen) {
             isOpen = true;
-            resize(); // Важно: пересчитываем размеры при открытии
+            resize(); 
             raf = requestAnimationFrame(draw);
           } else if (!open && isOpen) {
             isOpen = false;
