@@ -1,0 +1,565 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:dark;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#000;color:#fff}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}html,body{height:100%;overflow:hidden}</style></head><body>
+<title>GAME//SNK</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Space+Mono:wght@400;700&display=swap">
+<style>
+:root {
+  --bg: #000;
+  --panel: #0a0a0a;
+  --board: #000;
+  --ink: #fff;
+  --acid: #c0fe04;
+  --accent: var(--acid);
+  --on-accent: #000;
+  --grid: color-mix(in srgb, var(--acid) 8%, transparent);
+  --muted: #6f6f6f;
+  --hair: rgba(255,255,255,.16);
+  --display: 'Anton', Impact, 'Arial Narrow', sans-serif;
+  --mono: 'Space Mono', ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  background-color: var(--bg);
+  background-image:
+    linear-gradient(var(--grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 40px 40px;
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 14px;
+  line-height: 1.5;
+  padding-block: 20px 36px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+button { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+.wrap { 
+  width: 100%; 
+  max-width: 1040px; 
+  display: flex; 
+  flex-direction: column; 
+  gap: 22px; 
+  margin-block: auto;
+}
+
+.top {
+  display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between;
+  gap: 10px 24px;
+}
+h1 {
+  margin: 0; font-family: var(--display); font-weight: 400; text-transform: uppercase;
+  font-size: clamp(46px, 11vw, 104px); line-height: 0.88; letter-spacing: -0.01em;
+  text-wrap: balance;
+  color: var(--accent);
+}
+h1 .ghost { color: transparent; -webkit-text-stroke: 2px var(--ink); }
+.meta { font-size: 12px; text-transform: uppercase; letter-spacing: 0.12em; line-height: 1.7; text-align: right; color: var(--muted); }
+.meta b { font-weight: 700; color: var(--ink); }
+.stripe {
+  height: 12px;
+  background: repeating-linear-gradient(-45deg, var(--accent) 0 10px, #000 10px 20px);
+  border: 0;
+}
+
+.stage { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 32px; align-items: start; flex: 1; min-height: 0; }
+.board-col { display: flex; flex-direction: column; gap: 12px; min-width: 0; height: 100%; }
+.board-bar {
+  display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap;
+  font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--muted);
+}
+.board-bar .coords { font-variant-numeric: tabular-nums; color: var(--accent); }
+
+.frame {
+  position: relative; border: 2px solid var(--accent); background: var(--board);
+  box-shadow: 0 0 0 4px #000, 4px 4px 0 var(--accent);
+  margin: 0 auto;
+  width: 100%;
+  max-width: calc(100vh - 280px);
+  aspect-ratio: 1 / 1;
+}
+.frame.shake { animation: shake 0.42s steps(2, end) 1; }
+.frame.hit::after {
+  content: ""; position: absolute; inset: 0; border: 4px solid var(--accent); pointer-events: none;
+}
+canvas { display: block; width: 100%; height: 100%; object-fit: contain; touch-action: none; }
+
+.overlay {
+  position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; padding: 16px;
+  background: rgba(0,0,0,.82);
+}
+.overlay[hidden] { display: none; }
+.ov-box {
+  background: #000; border: 2px solid var(--accent); padding: 16px 18px 18px;
+  max-width: 100%; width: 340px; display: flex; flex-direction: column; gap: 10px;
+}
+.ov-tag { font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); }
+.ov-title {
+  margin: 0; font-family: var(--display); font-weight: 400; text-transform: uppercase;
+  font-size: clamp(28px, 7vw, 42px); line-height: 0.98; text-wrap: balance;
+  color: var(--accent);
+}
+.ov-title.glitch { animation: glitch 0.7s steps(1, end) 1; }
+.ov-sub { margin: 0; font-size: 13px; line-height: 1.5; color: var(--ink); }
+.ov-box .btn { align-self: flex-start; margin-top: 4px; }
+
+.btn {
+  font-family: var(--mono);
+  font-weight: 700; font-size: 12px; text-transform: uppercase; letter-spacing: 0.14em;
+  background: var(--accent); color: var(--on-accent); border: 0;
+  padding: 10px 16px; cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.btn:hover {
+  transform: translate(2px, -2px);
+  box-shadow: -2px 2px 0 var(--ink);
+}
+.btn:active {
+  transform: translate(2px, 2px);
+  box-shadow: 0 0 0;
+}
+.btn.alt { background: var(--accent); }
+
+.pad {
+  display: none; grid-template-columns: repeat(3, 64px); grid-template-rows: repeat(2, 64px);
+  gap: 8px; justify-content: center; padding: 4px 0 8px;
+}
+.pad button {
+  background: var(--accent); color: var(--on-accent); border: 0;
+  font-size: 24px; font-weight: 700; cursor: pointer; touch-action: manipulation;
+  transition: transform 0.1s;
+}
+.pad button:active { transform: translate(2px, 2px); }
+.pad [data-dir="up"] { grid-column: 2; grid-row: 1; }
+.pad [data-dir="left"] { grid-column: 1; grid-row: 2; }
+.pad [data-dir="down"] { grid-column: 2; grid-row: 2; }
+.pad [data-dir="right"] { grid-column: 3; grid-row: 2; }
+
+.side { display: flex; flex-direction: column; gap: 20px; min-width: 0; }
+.panel { background: var(--panel); border: 1px solid var(--hair); margin-right: 0; }
+.label { font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); }
+.score { padding: 12px 16px 10px; border-bottom: 1px solid var(--hair); }
+.score .num {
+  display: block; font-family: var(--display); font-size: 72px; line-height: 1; letter-spacing: 0.01em;
+  font-variant-numeric: tabular-nums; min-width: 4ch;
+  color: var(--accent);
+}
+.cells { display: grid; grid-template-columns: 1fr 1fr; }
+.cell { padding: 10px 16px 12px; min-width: 0; }
+.cell:nth-child(odd) { border-right: 1px solid var(--hair); }
+.cell:nth-child(n+3) { border-top: 1px solid var(--hair); }
+.cell .val { display: block; font-size: 24px; font-weight: 700; font-variant-numeric: tabular-nums; color: var(--ink); }
+.cell .val small { font-size: 12px; font-weight: 500; color: var(--muted); }
+
+.group-head { padding: 8px 16px; border-bottom: 1px solid var(--hair); }
+.seg { display: grid; grid-template-columns: 1fr 1fr; gap: 0; }
+.seg button {
+  background: var(--accent); color: var(--on-accent); border: 0;
+  padding: 12px 8px; cursor: pointer; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.1em; font-size: 12px;
+  font-family: var(--mono);
+  transition: transform 0.2s, box-shadow 0.2s, background 0.2s, color 0.2s;
+}
+.seg button + button { border-left: 1px solid #000; }
+.seg button:hover {
+  transform: translate(0, -1px);
+  box-shadow: 0 -2px 0 var(--ink);
+}
+.seg button[aria-pressed="true"] {
+  background: #000;
+  color: var(--accent);
+  box-shadow: inset 0 0 0 1px var(--accent);
+}
+.tools { display: flex; gap: 12px; flex-wrap: wrap; padding: 14px 16px; border-top: 1px solid var(--hair); }
+.tools .btn { padding: 8px 12px; font-size: 11px; }
+
+.keys { margin: 0; padding: 12px 16px 14px; display: grid; grid-template-columns: auto 1fr; gap: 8px 14px; align-items: center; font-size: 12px; color: var(--muted); }
+.keys dt { display: flex; gap: 4px; flex-wrap: wrap; }
+.keys dd { margin: 0; color: var(--ink); }
+kbd {
+  font-family: var(--mono); font-size: 11px; font-weight: 700; padding: 1px 6px;
+  border: 1px solid var(--hair); background: #000; color: var(--accent);
+}
+.foot { font-size: 12px; color: var(--muted); letter-spacing: 0.04em; max-width: 64ch; }
+
+@keyframes shake {
+  0% { transform: translate(0, 0); } 25% { transform: translate(-7px, 3px); }
+  50% { transform: translate(6px, -4px); } 75% { transform: translate(-3px, -2px); } 100% { transform: translate(0, 0); }
+}
+@keyframes glitch {
+  0% { text-shadow: 5px 0 var(--accent), -5px 0 var(--ink); transform: translateX(-4px); }
+  20% { text-shadow: -4px 2px var(--accent), 4px -2px var(--ink); transform: translateX(5px); }
+  40% { text-shadow: 3px 0 var(--accent); transform: translateX(0); }
+  60% { text-shadow: -6px 0 var(--accent), 6px 0 var(--ink); transform: translateX(-3px); }
+  100% { text-shadow: none; transform: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .frame.shake, .ov-title.glitch { animation: none; }
+  .btn, .pad button, .seg button { transition: none; }
+}
+
+@media (max-width: 820px) {
+  .stage { grid-template-columns: minmax(0, 1fr); gap: 24px; }
+  .meta { text-align: left; }
+}
+@media (max-width: 820px), (pointer: coarse) {
+  .pad { display: grid; }
+}
+@media (max-width: 480px) {
+  .frame { box-shadow: 0 0 0 3px #000, 3px 3px 0 var(--accent); margin-right: 3px; margin-bottom: 3px; }
+  .score .num { font-size: 60px; }
+}
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <h1>GAME <span class="ghost">//SNK</span></h1>
+    <div class="meta">
+      Terminal No.07 · sector 20×20<br>
+      Mode: <b id="modeLabel">walls</b> · Tick: <b id="tickLabel">140 ms</b>
+    </div>
+  </header>
+  <div class="stripe" aria-hidden="true"></div>
+
+  <main class="stage">
+    <section class="board-col" aria-label="Game field">
+      <div class="board-bar">
+        <span>Head <span class="coords" id="coords">X:09 Y:10</span></span>
+        <span id="statusLabel">Waiting</span>
+      </div>
+
+      <div class="frame" id="frame">
+        <canvas id="cv" width="560" height="560" role="img" aria-label="20 by 20 snake field"></canvas>
+        <div class="overlay" id="overlay">
+          <div class="ov-box">
+            <span class="ov-tag" id="ovTag">System ready</span>
+            <h2 class="ov-title" id="ovTitle">Ready</h2>
+            <p class="ov-sub" id="ovSub">Arrows or WASD. Swipe on phone. Space pauses.</p>
+            <button class="btn" id="ovBtn" type="button">Start</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="pad" aria-label="Touch controls">
+        <button type="button" data-dir="up" aria-label="Up">↑</button>
+        <button type="button" data-dir="left" aria-label="Left">←</button>
+        <button type="button" data-dir="down" aria-label="Down">↓</button>
+        <button type="button" data-dir="right" aria-label="Right">→</button>
+      </div>
+    </section>
+
+    <aside class="side" aria-label="Control panel">
+      <div class="panel">
+        <div class="score">
+          <span class="label">Score</span>
+          <span class="num" id="score">0000</span>
+        </div>
+        <div class="cells">
+          <div class="cell"><span class="label">Record</span><span class="val" id="best">0000</span></div>
+          <div class="cell"><span class="label">Length</span><span class="val" id="len">3 <small>cells</small></span></div>
+          <div class="cell"><span class="label">Level</span><span class="val" id="lvl">1</span></div>
+          <div class="cell"><span class="label">Eaten</span><span class="val" id="eaten">0</span></div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="group-head label">Field boundaries</div>
+        <div class="seg" role="group" aria-label="Boundary mode">
+          <button type="button" id="mWall" aria-pressed="true">Walls</button>
+          <button type="button" id="mWrap" aria-pressed="false">Wrap</button>
+        </div>
+        <div class="tools">
+          <button class="btn alt" type="button" id="snd" aria-pressed="true">Sound: on</button>
+          <button class="btn alt" type="button" id="restart">Reset</button>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="group-head label">Input</div>
+        <dl class="keys">
+          <dt><kbd>←</kbd><kbd>↑</kbd><kbd>↓</kbd><kbd>→</kbd></dt><dd>Direction</dd>
+          <dt><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd></dt><dd>Direction, any layout</dd>
+          <dt><kbd>Space</kbd></dt><dd>Pause and start</dd>
+          <dt><kbd>R</kbd></dt><dd>Reset</dd>
+        </dl>
+      </div>
+    </aside>
+  </main>
+
+  <p class="foot">Every 5 eaten cells raise the level. The tick shortens by 3 ms per cell, with a lower limit of 55 ms. Score per cell is 10 × level.</p>
+</div>
+
+<script>
+(function () {
+  'use strict';
+  var N = 20;
+  var cv = document.getElementById('cv');
+  var ctx = cv.getContext('2d');
+  var frame = document.getElementById('frame');
+  var overlay = document.getElementById('overlay');
+  var el = {
+    ovTag: document.getElementById('ovTag'), ovTitle: document.getElementById('ovTitle'),
+    ovSub: document.getElementById('ovSub'), ovBtn: document.getElementById('ovBtn'),
+    score: document.getElementById('score'), best: document.getElementById('best'),
+    len: document.getElementById('len'), lvl: document.getElementById('lvl'), eaten: document.getElementById('eaten'),
+    coords: document.getElementById('coords'), status: document.getElementById('statusLabel'),
+    modeLabel: document.getElementById('modeLabel'), tickLabel: document.getElementById('tickLabel'),
+    mWall: document.getElementById('mWall'), mWrap: document.getElementById('mWrap'),
+    snd: document.getElementById('snd'), restart: document.getElementById('restart')
+  };
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+  function col(name) {
+    return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+  }
+
+  var state = 'idle';
+  var mode = 'wall';
+  var snake, dir, queue, food, score, eaten, tickMs, acc, last, bestScore, reason, newRecord;
+  var sndOn = true, audio = null;
+
+  function pad(n, w) { var s = String(n); while (s.length < w) s = '0' + s; return s; }
+  function level() { return 1 + Math.floor(eaten / 5); }
+  function loadBest() { try { return parseInt(localStorage.getItem('zb-best-' + mode), 10) || 0; } catch (e) { return 0; } }
+  function saveBest(v) { try { localStorage.setItem('zb-best-' + mode, String(v)); } catch (e) {} }
+
+  function beep(freq, dur, type, vol) {
+    if (!sndOn) return;
+    try {
+      audio = audio || new (window.AudioContext || window.webkitAudioContext)();
+      if (audio.state === 'suspended') audio.resume();
+      var o = audio.createOscillator(), g = audio.createGain();
+      o.type = type || 'square'; o.frequency.value = freq; g.gain.value = vol || 0.04;
+      o.connect(g); g.connect(audio.destination);
+      o.start(); g.gain.exponentialRampToValueAtTime(0.0001, audio.currentTime + dur); o.stop(audio.currentTime + dur);
+    } catch (e) {}
+  }
+
+  function placeFood() {
+    var free = [], taken = {};
+    snake.forEach(function (s) { taken[s.x + ',' + s.y] = 1; });
+    for (var y = 0; y < N; y++) for (var x = 0; x < N; x++) if (!taken[x + ',' + y]) free.push({ x: x, y: y });
+    if (!free.length) { food = null; return false; }
+    food = free[Math.floor(Math.random() * free.length)];
+    return true;
+  }
+
+  function reset() {
+    snake = [{ x: 10, y: 10 }, { x: 9, y: 10 }, { x: 8, y: 10 }];
+    dir = { x: 1, y: 0 }; queue = [];
+    score = 0; eaten = 0; tickMs = 140; acc = 0; reason = ''; newRecord = false;
+    bestScore = loadBest();
+    placeFood();
+  }
+
+  function setOverlay(kind) {
+    el.ovTitle.classList.remove('glitch');
+    if (kind === 'run') { overlay.hidden = true; return; }
+    overlay.hidden = false;
+    if (kind === 'idle') {
+      el.ovTag.textContent = 'System ready';
+      el.ovTitle.textContent = 'Ready';
+      el.ovSub.textContent = 'Arrows or WASD. Swipe on phone. Space pauses.';
+      el.ovBtn.textContent = 'Start';
+    } else if (kind === 'pause') {
+      el.ovTag.textContent = 'Clock stopped';
+      el.ovTitle.textContent = 'Pause';
+      el.ovSub.textContent = 'Score ' + pad(score, 4) + ', length ' + snake.length + '. Press space or the button.';
+      el.ovBtn.textContent = 'Continue';
+    } else {
+      el.ovTag.textContent = newRecord ? 'New record' : 'Run interrupted';
+      el.ovTitle.textContent = reason === 'win' ? 'Field filled' : 'System failure';
+      el.ovSub.textContent = (reason === 'wall' ? 'Wall contact. ' : reason === 'self' ? 'Self contact. ' : 'No free cells remain. ') +
+        'Score ' + pad(score, 4) + ', length ' + snake.length + '.';
+      el.ovBtn.textContent = 'Play again';
+      void el.ovTitle.offsetWidth;
+      if (!reduce.matches) el.ovTitle.classList.add('glitch');
+    }
+  }
+
+  var statusText = { idle: 'Waiting', run: 'Active', pause: 'Paused', over: 'Failure' };
+  function ui() {
+    el.score.textContent = pad(score, 4);
+    el.best.textContent = pad(Math.max(bestScore, score), 4);
+    el.len.innerHTML = snake.length + ' <small>cells</small>';
+    el.lvl.textContent = level();
+    el.eaten.textContent = eaten;
+    el.coords.textContent = 'X:' + pad(snake[0].x, 2) + ' Y:' + pad(snake[0].y, 2);
+    el.status.textContent = statusText[state];
+    el.tickLabel.textContent = Math.round(tickMs) + ' ms';
+    el.modeLabel.textContent = mode === 'wall' ? 'walls' : 'wrap';
+  }
+
+  function start() { reset(); state = 'run'; last = performance.now(); setOverlay('run'); ui(); beep(520, 0.06); }
+  function pauseGame() { if (state === 'run') { state = 'pause'; setOverlay('pause'); ui(); } }
+  function resumeGame() { if (state === 'pause') { state = 'run'; last = performance.now(); acc = 0; setOverlay('run'); ui(); } }
+  function toIdle() { reset(); state = 'idle'; setOverlay('idle'); ui(); }
+  function toggle() { if (state === 'run') pauseGame(); else if (state === 'pause') resumeGame(); else start(); }
+
+  function die(why) {
+    state = 'over'; reason = why;
+    if (score > bestScore) { bestScore = score; newRecord = score > 0; saveBest(score); }
+    setOverlay('over'); ui();
+    frame.classList.remove('shake'); void frame.offsetWidth;
+    if (!reduce.matches) frame.classList.add('shake');
+    beep(220, 0.14, 'sawtooth', 0.05);
+    setTimeout(function () { beep(150, 0.16, 'sawtooth', 0.05); }, 140);
+    setTimeout(function () { beep(90, 0.3, 'sawtooth', 0.05); }, 300);
+  }
+
+  function step() {
+    if (queue.length) dir = queue.shift();
+    var hx = snake[0].x + dir.x, hy = snake[0].y + dir.y;
+    if (mode === 'wrap') { hx = (hx + N) % N; hy = (hy + N) % N; }
+    else if (hx < 0 || hy < 0 || hx >= N || hy >= N) { die('wall'); return; }
+    var grow = food && hx === food.x && hy === food.y;
+    var body = grow ? snake : snake.slice(0, -1);
+    for (var i = 0; i < body.length; i++) if (body[i].x === hx && body[i].y === hy) { die('self'); return; }
+    snake.unshift({ x: hx, y: hy });
+    if (grow) {
+      eaten++; score += 10 * level();
+      tickMs = Math.max(55, 140 - eaten * 3);
+      frame.classList.add('hit'); setTimeout(function () { frame.classList.remove('hit'); }, 110);
+      beep(880, 0.07);
+      if (!placeFood()) { if (score > bestScore) { bestScore = score; newRecord = true; saveBest(score); } state = 'over'; reason = 'win'; setOverlay('over'); }
+    } else snake.pop();
+    ui();
+  }
+
+  function setDir(dx, dy) {
+    var ref = queue.length ? queue[queue.length - 1] : dir;
+    if ((ref.x === -dx && ref.y === -dy) || (ref.x === dx && ref.y === dy)) return;
+    if (queue.length < 2) queue.push({ x: dx, y: dy });
+  }
+  function handleDir(dx, dy) {
+    if (state === 'over') return;
+    if (state === 'idle') start();
+    else if (state === 'pause') resumeGame();
+    setDir(dx, dy);
+  }
+
+  var keyMap = {
+    ArrowUp: [0, -1], KeyW: [0, -1], ArrowDown: [0, 1], KeyS: [0, 1],
+    ArrowLeft: [-1, 0], KeyA: [-1, 0], ArrowRight: [1, 0], KeyD: [1, 0]
+  };
+  window.addEventListener('keydown', function (e) {
+    if (e.ctrlKey || e.metaKey || e.altKey) return;
+    var d = keyMap[e.code];
+    if (d) { e.preventDefault(); handleDir(d[0], d[1]); return; }
+    var onBtn = e.target && e.target.tagName === 'BUTTON';
+    if ((e.code === 'Space' || e.code === 'Enter') && !onBtn) { e.preventDefault(); toggle(); }
+    else if (e.code === 'KeyP') pauseGame();
+    else if (e.code === 'KeyR') toIdle();
+  });
+
+  var tx = 0, ty = 0, tracking = false;
+  cv.addEventListener('touchstart', function (e) { var t = e.changedTouches[0]; tx = t.clientX; ty = t.clientY; tracking = true; }, { passive: true });
+  cv.addEventListener('touchend', function (e) {
+    if (!tracking) return; tracking = false;
+    var t = e.changedTouches[0], dx = t.clientX - tx, dy = t.clientY - ty;
+    if (Math.max(Math.abs(dx), Math.abs(dy)) < 24) return;
+    if (Math.abs(dx) > Math.abs(dy)) handleDir(dx > 0 ? 1 : -1, 0); else handleDir(0, dy > 0 ? 1 : -1);
+  });
+  var padMap = { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] };
+  document.querySelectorAll('.pad button').forEach(function (b) {
+    b.addEventListener('pointerdown', function (e) { e.preventDefault(); var d = padMap[b.dataset.dir]; handleDir(d[0], d[1]); });
+  });
+
+  el.ovBtn.addEventListener('click', toggle);
+  el.restart.addEventListener('click', toIdle);
+  function setMode(m) {
+    mode = m;
+    el.mWall.setAttribute('aria-pressed', m === 'wall');
+    el.mWrap.setAttribute('aria-pressed', m === 'wrap');
+    toIdle();
+  }
+  el.mWall.addEventListener('click', function () { setMode('wall'); });
+  el.mWrap.addEventListener('click', function () { setMode('wrap'); });
+  el.snd.addEventListener('click', function () {
+    sndOn = !sndOn;
+    el.snd.setAttribute('aria-pressed', sndOn);
+    el.snd.textContent = 'Sound: ' + (sndOn ? 'on' : 'off');
+    if (sndOn) beep(660, 0.06);
+  });
+  document.addEventListener('visibilitychange', function () { if (document.hidden) pauseGame(); });
+
+  function fit() {
+    var dpr = Math.min(window.devicePixelRatio || 1, 3);
+    var w = Math.round(cv.getBoundingClientRect().width * dpr);
+    if (w > 0 && cv.width !== w) { cv.width = w; cv.height = w; }
+  }
+  if (window.ResizeObserver) new ResizeObserver(fit).observe(cv); else window.addEventListener('resize', fit);
+
+  function render(t) {
+    var s = cv.width, c = s / N, dpr = s / (cv.getBoundingClientRect().width || s);
+    var ink = col('--ink'), accent = col('--accent'), board = col('--board'), grid = col('--grid'), muted = col('--muted');
+    ctx.fillStyle = board; ctx.fillRect(0, 0, s, s);
+
+    ctx.strokeStyle = grid; ctx.lineWidth = Math.max(1, dpr); ctx.beginPath();
+    for (var i = 1; i < N; i++) { var p = Math.round(i * c) + 0.5; ctx.moveTo(p, 0); ctx.lineTo(p, s); ctx.moveTo(0, p); ctx.lineTo(s, p); }
+    ctx.stroke();
+
+    if (food) {
+      var fx = food.x * c, fy = food.y * c;
+      var pulse = reduce.matches ? 0 : Math.sin(t / 170) * 0.05 * c;
+      var inset = c * 0.26 - pulse;
+      ctx.fillStyle = accent; ctx.fillRect(fx + inset, fy + inset, c - inset * 2, c - inset * 2);
+      var m = c * 0.06, L = c * 0.26;
+      ctx.strokeStyle = ink; ctx.lineWidth = Math.max(2, dpr * 2); ctx.beginPath();
+      ctx.moveTo(fx + m, fy + m + L); ctx.lineTo(fx + m, fy + m); ctx.lineTo(fx + m + L, fy + m);
+      ctx.moveTo(fx + c - m - L, fy + m); ctx.lineTo(fx + c - m, fy + m); ctx.lineTo(fx + c - m, fy + m + L);
+      ctx.moveTo(fx + c - m, fy + c - m - L); ctx.lineTo(fx + c - m, fy + c - m); ctx.lineTo(fx + c - m - L, fy + c - m);
+      ctx.moveTo(fx + m + L, fy + c - m); ctx.lineTo(fx + m, fy + c - m); ctx.lineTo(fx + m, fy + c - m - L);
+      ctx.stroke();
+    }
+
+    var g = Math.max(1.5, c * 0.07);
+    for (var k = snake.length - 1; k >= 0; k--) {
+      var sg = snake[k], x = sg.x * c, y = sg.y * c;
+      if (k === 0) {
+        ctx.fillStyle = accent; ctx.fillRect(x + g, y + g, c - g * 2, c - g * 2);
+        ctx.fillStyle = ink; var e = c * 0.22;
+        ctx.fillRect(x + c / 2 - e / 2 + dir.x * c * 0.2, y + c / 2 - e / 2 + dir.y * c * 0.2, e, e);
+      } else {
+        ctx.fillStyle = state === 'over' ? muted : ink;
+        ctx.fillRect(x + g, y + g, c - g * 2, c - g * 2);
+      }
+    }
+  }
+
+  function loop(t) {
+    var dt = last ? Math.min(t - last, 100) : 0; last = t;
+    if (state === 'run') {
+      acc += dt;
+      while (acc >= tickMs && state === 'run') { acc -= tickMs; step(); }
+    }
+    render(t);
+    requestAnimationFrame(loop);
+  }
+
+  reset(); setOverlay('idle'); fit(); ui();
+  requestAnimationFrame(loop);
+})();
+</script>
+
+<script>
+window.addEventListener('message', function(e){
+  if (e.origin === location.origin && e.source === window.parent &&
+      e.data && e.data.type === 'acid' && /^#[0-9a-f]{6}$/i.test(e.data.value)) {
+    document.documentElement.style.setProperty('--accent', e.data.value);
+    document.documentElement.style.setProperty('--acid', e.data.value);
+  }
+});
+</script>
+
+</body></html>
