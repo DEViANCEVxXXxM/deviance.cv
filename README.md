@@ -1,4 +1,3 @@
-# deviance.cv
 <!--
   ██████╗ ███████╗██╗   ██╗██╗ █████╗ ███╗   ██╗ ██████╗███████╗
   ██╔══██╗██╔════╝██║   ██║██║██╔══██╗████╗  ██║██╔════╝██╔════╝
@@ -125,7 +124,7 @@ python -m http.server 8000
 
 ```
 +---------------------------------------------------------------+
-|  MAIL   : deviancevxxxxm@gmail.com                             |
+|  MAIL   : deviancevxxxxm@gmail.com                            |
 |  LOC    : TASHKENT / UTC+05                                   |
 |  STATUS : OPEN TO WORK                                        |
 |  © 2026 DEVIANCE                                              |
