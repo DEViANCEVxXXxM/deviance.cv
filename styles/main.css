@@ -511,6 +511,7 @@ section{position:relative;padding:72px 20px}
 .sec-head.in .note{opacity:1;transform:none;letter-spacing:.16em;transition-delay:.24s}
 .reveal{opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s ease}
 .reveal.in{opacity:1;transform:none;}
+.huge.reveal.in {pointer-events: none !important;}
 .d1{transition-delay:.08s}.d2{transition-delay:.16s}.d3{transition-delay:.24s}.d4{transition-delay:.32s}
 .word-rotator{display:inline-block;min-width:60px;position:relative;font-variant-ligatures:none}
 

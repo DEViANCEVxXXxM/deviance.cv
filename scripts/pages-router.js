@@ -153,7 +153,7 @@
       wrap.setAttribute('data-page', '');
       wrap.style.height = '100%';
       var iframe = document.createElement('iframe');
-      iframe.src = abs(url.replace(/^iframe\
+      iframe.src = abs(url.replace(/^iframe\//, ''));
       iframe.loading = 'lazy';
       iframe.title = iframe.src.split('/').pop().replace('.html', '');
       iframe.className = 'page-embed-frame';
