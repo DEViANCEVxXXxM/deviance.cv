@@ -56,7 +56,7 @@
         '<div class="dx-row" style="justify-content:space-between;margin-top:10px"><span class="dx-jp">サイバーパンク</span><span class="dx-label">V.26 // TSK</span></div>'));
       hero.appendChild(el('dx-hero-l',
         '<div class="dx-row" style="align-items:flex-start;gap:16px"><span class="dx-vert">DEViNACE</span>' +
-        '<div class="dx-col" style="gap:14px">' + arrow(120, 45) + '<span class="dx-outline" style="--fs:40px">XXX</span>' + dots(5) + '<span class="dx-label">LINK // STABLE</span></div></div>'));
+        '<div class="dx-col" style="gap:14px">' + arrow(120, 45) + '<span class="dx-outline" style="--fs:40px">DESIGN</span>' + dots(5) + '<span class="dx-label">LINK // STABLE</span></div></div>'));
     }
 
     var side = document.querySelector('.work-side');
@@ -77,7 +77,7 @@
     }
     if (home){
       divider('stack',
-        '<span class="dx-num fill">02</span>' + spark(18, 0) + '<span class="dx-outline" style="--fs:34px">XXX</span>' + spark(12, 1) +
+        '<span class="dx-num fill">02</span>' + spark(18, 0) + '<span class="dx-outline" style="--fs:34px">CONNECTED</span>' + spark(12, 1) +
         '<div class="dx-hazard"></div><span class="dx-barcode"></span><span class="dx-label">SIGNAL // 0x1A</span>');
       divider('about',
         '<span class="dx-label">NODE // 0x2A</span>' + dots(5) + '<div class="dx-bar" style="--p:40%;flex:1"></div>' + globe(46) + spark(16, .8) + '<span class="dx-jp">サイバーパンク</span>');
