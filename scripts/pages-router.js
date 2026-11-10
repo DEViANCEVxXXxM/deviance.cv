@@ -123,7 +123,7 @@
 
   function loadPage(url){
     try { url = decodeURIComponent(url); } catch(e){}
-    var bare = url.replace(/^iframe\
+    var bare = url.replace(/^iframe\//, '');
     if (!Object.prototype.hasOwnProperty.call(ALLOWED, bare)) {
       document.title = baseTitle;
       unmountAll();
